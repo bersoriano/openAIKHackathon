@@ -25,6 +25,7 @@ export default function FormApp() {
   const [newGoal, setNewGoal] = useState('');
   const [newGoalType, setNewGoalType] = useState<'Growth' | 'Produce'>('Growth');
   const [newAgentDesc, setNewAgentDesc] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // const addPrompt = () => {
   //   if (newPrompt.trim()) {
@@ -82,8 +83,13 @@ export default function FormApp() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     console.log('Form Data:', formData);
-    alert('Form submitted! Check console for data.');
+    
+    // Simulate processing for 5 seconds
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
   };
 
   const handleOptimizerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +100,29 @@ export default function FormApp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8 relative">
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 shadow-2xl max-w-md w-full mx-4">
+            <div className="text-center">
+              <div className="mb-6">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Thinking With OpenAI</h3>
+              <p className="text-gray-600 flex items-center justify-center gap-1">
+                You will get an optimized version of your content in a few seconds.
+                <span className="flex gap-1">
+                  <span className="animate-bounce" style={{ animationDelay: '0ms' }}>.</span>
+                  <span className="animate-bounce" style={{ animationDelay: '150ms' }}>.</span>
+                  <span className="animate-bounce" style={{ animationDelay: '300ms' }}>.</span>
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
@@ -296,10 +324,11 @@ export default function FormApp() {
           <div className="pt-6">
             <button
               type="submit"
-              className="w-full text-lg py-8 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg flex items-center justify-center"
+              disabled={isLoading}
+              className="w-full text-lg py-8 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold rounded-lg flex items-center justify-center"
             >
               <Save className="h-5 w-5 mr-2" />
-              Save Configuration
+              {isLoading ? 'Processing...' : 'Self Optimize content'}
             </button>
           </div>
         </form>
