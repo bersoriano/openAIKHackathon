@@ -7,6 +7,7 @@ import { Plus, Trash2, Save } from 'lucide-react';
 interface Goal {
   id: number;
   prompt: string;
+  type: 'Growth' | 'Produce';
 }
 
 interface AgentDescription {
@@ -22,6 +23,7 @@ export default function FormApp() {
   });
 
   const [newGoal, setNewGoal] = useState('');
+  const [newGoalType, setNewGoalType] = useState<'Growth' | 'Produce'>('Growth');
   const [newAgentDesc, setNewAgentDesc] = useState('');
 
   // const addPrompt = () => {
@@ -39,9 +41,10 @@ export default function FormApp() {
       const newId = formData.goals.length > 0 ? Math.max(...formData.goals.map(g => g.id)) + 1 : 1;
       setFormData(prev => ({
         ...prev,
-        goals: [...prev.goals, { id: newId, prompt: newGoal.trim() }]
+        goals: [...prev.goals, { id: newId, prompt: newGoal.trim(), type: newGoalType }]
       }));
       setNewGoal('');
+      setNewGoalType('Growth');
     }
   };
 
@@ -194,6 +197,14 @@ export default function FormApp() {
                     }}
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
+                  <select
+                    value={newGoalType}
+                    onChange={(e) => setNewGoalType(e.target.value as 'Growth' | 'Produce')}
+                    className="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                  >
+                    <option value="Growth">Growth</option>
+                    <option value="Produce">Produce</option>
+                  </select>
                   <button
                     type="button"
                     onClick={addGoal}
@@ -210,7 +221,10 @@ export default function FormApp() {
                         key={goal.id}
                         className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-200"
                       >
-                        <span className="text-sm font-medium text-emerald-800">{goal.prompt}</span>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-emerald-800">{goal.prompt}</span>
+                          <span className="text-xs text-emerald-600 mt-1">Type: {goal.type}</span>
+                        </div>
                         <button
                           type="button"
                           onClick={() => removeGoal(goal.id)}
