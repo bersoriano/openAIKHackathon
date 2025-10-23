@@ -4,33 +4,42 @@ import { useState, FormEvent } from 'react';
 // Using standard HTML elements with Tailwind classes
 import { Plus, Trash2, Save } from 'lucide-react';
 
+interface Goal {
+  id: number;
+  prompt: string;
+}
+
+interface AgentDescription {
+  id: number;
+  prompt: string;
+}
+
 export default function FormApp() {
   const [formData, setFormData] = useState({
     optimizer: '',
-    prompts: [] as string[],
-    goals: [] as string[],
-    agentDescriptions: [] as string[]
+    goals: [] as Goal[],
+    agentDescriptions: [] as AgentDescription[]
   });
 
-  const [newPrompt, setNewPrompt] = useState('');
   const [newGoal, setNewGoal] = useState('');
   const [newAgentDesc, setNewAgentDesc] = useState('');
 
-  const addPrompt = () => {
-    if (newPrompt.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        prompts: [...prev.prompts, newPrompt.trim()]
-      }));
-      setNewPrompt('');
-    }
-  };
+  // const addPrompt = () => {
+  //   if (newPrompt.trim()) {
+  //     setFormData(prev => ({
+  //       ...prev,
+  //       prompts: [...prev.prompts, newPrompt.trim()]
+  //     }));
+  //     setNewPrompt('');
+  //   }
+  // };
 
   const addGoal = () => {
     if (newGoal.trim()) {
+      const newId = formData.goals.length > 0 ? Math.max(...formData.goals.map(g => g.id)) + 1 : 1;
       setFormData(prev => ({
         ...prev,
-        goals: [...prev.goals, newGoal.trim()]
+        goals: [...prev.goals, { id: newId, prompt: newGoal.trim() }]
       }));
       setNewGoal('');
     }
@@ -38,32 +47,33 @@ export default function FormApp() {
 
   const addAgentDesc = () => {
     if (newAgentDesc.trim()) {
+      const newId = formData.agentDescriptions.length > 0 ? Math.max(...formData.agentDescriptions.map(a => a.id)) + 1 : 1;
       setFormData(prev => ({
         ...prev,
-        agentDescriptions: [...prev.agentDescriptions, newAgentDesc.trim()]
+        agentDescriptions: [...prev.agentDescriptions, { id: newId, prompt: newAgentDesc.trim() }]
       }));
       setNewAgentDesc('');
     }
   };
 
-  const removePrompt = (index: number) => {
+  // const removePrompt = (index: number) => {
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     prompts: prev.prompts.filter((_, i) => i !== index)
+  //   }));
+  // };
+
+  const removeGoal = (id: number) => {
     setFormData(prev => ({
       ...prev,
-      prompts: prev.prompts.filter((_, i) => i !== index)
+      goals: prev.goals.filter(goal => goal.id !== id)
     }));
   };
 
-  const removeGoal = (index: number) => {
+  const removeAgentDesc = (id: number) => {
     setFormData(prev => ({
       ...prev,
-      goals: prev.goals.filter((_, i) => i !== index)
-    }));
-  };
-
-  const removeAgentDesc = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      agentDescriptions: prev.agentDescriptions.filter((_, i) => i !== index)
+      agentDescriptions: prev.agentDescriptions.filter(agent => agent.id !== id)
     }));
   };
 
@@ -113,7 +123,7 @@ export default function FormApp() {
           </div>
 
           {/* Prompts - Multiple */}
-          <div className="bg-white rounded-lg shadow-md border">
+          {/* <div className="bg-white rounded-lg shadow-md border">
             <div className="p-6 border-b">
               <h3 className="text-lg font-semibold flex items-center gap-2">
                 Prompts
@@ -162,7 +172,7 @@ export default function FormApp() {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Goals - Multiple */}
           <div className="bg-white rounded-lg shadow-md border">
@@ -195,15 +205,15 @@ export default function FormApp() {
                 </div>
                 {formData.goals.length > 0 && (
                   <div className="space-y-2">
-                    {formData.goals.map((goal, index) => (
+                    {formData.goals.map((goal) => (
                       <div
-                        key={index}
+                        key={goal.id}
                         className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-200"
                       >
-                        <span className="text-sm font-medium text-emerald-800">{goal}</span>
+                        <span className="text-sm font-medium text-emerald-800">{goal.prompt}</span>
                         <button
                           type="button"
-                          onClick={() => removeGoal(index)}
+                          onClick={() => removeGoal(goal.id)}
                           className="h-8 w-8 p-0 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -247,15 +257,15 @@ export default function FormApp() {
                 </div>
                 {formData.agentDescriptions.length > 0 && (
                   <div className="space-y-2">
-                    {formData.agentDescriptions.map((desc, index) => (
+                    {formData.agentDescriptions.map((agent) => (
                       <div
-                        key={index}
+                        key={agent.id}
                         className="flex items-center justify-between p-3 bg-indigo-50 rounded-lg border border-indigo-200"
                       >
-                        <span className="text-sm font-medium text-indigo-800">{desc}</span>
+                        <span className="text-sm font-medium text-indigo-800">{agent.prompt}</span>
                         <button
                           type="button"
-                          onClick={() => removeAgentDesc(index)}
+                          onClick={() => removeAgentDesc(agent.id)}
                           className="h-8 w-8 p-0 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded"
                         >
                           <Trash2 className="h-4 w-4" />
