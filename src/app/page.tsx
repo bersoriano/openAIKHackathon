@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 // Using standard HTML elements with Tailwind classes
-import { Plus, Trash2, Save } from 'lucide-react';
+import { Plus, Trash2, Send } from 'lucide-react';
 
 interface Goal {
   id: number;
@@ -403,8 +403,8 @@ export default function FormApp() {
               disabled={isLoading}
               className="w-full text-lg py-8 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold rounded-lg flex items-center justify-center"
             >
-              <Save className="h-5 w-5 mr-2" />
-              {isLoading ? 'Processing...' : 'Self Optimize content'}
+              <Send className="h-5 w-5 mr-2" />
+              {isLoading ? 'Processing...' : 'Optimize content'}
             </button>
           </div>
         </form>
